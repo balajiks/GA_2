@@ -13,24 +13,19 @@ try:
 except FileNotFoundError:
     raise HTTPException(status_code=500, detail="student_marks.json not found.")
 
-# Enable CORS (useful for frontend integration)
+# Enable CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],# Allows all origins
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["*"],  # Allows all HTTP methods
-    allow_headers=["*"],  # Allows all headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-@app.get("/")
+@app.get("/api")
 async def get_student_marks(name: Optional[List[str]] = Query(None)):
     if not name:
         return {"students": student_marks}
     
     results = {n: student_marks.get(n, "Not Found") for n in name}
     return results
-
-# Run the app locally
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000, reload=True)
